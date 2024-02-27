@@ -14,7 +14,7 @@ export default class WindowController {
     this.urlServer = `http://localhost:${port}`;
     this.toolTip = new Tooltip();
     this.actualMessages = [];
-    this.userName = null;
+    this.id = null;
   }
 
   init() {
@@ -24,27 +24,45 @@ export default class WindowController {
     this.editor.addChangeListeners(this.onChangeChat.bind(this));
   }
 
-  onChangeChat() {
-    
+  async onChangeChat(event) {
+    // const query = encodeURIComponent(event.target.value);
+    const url = `${this.urlServer}/message/`;
+    const obj = {
+      id: this.id,
+      message: event.target.value
+    }
+    // const response = await fetch(url + query, {
+    const response = await fetch(url, {
+      method: 'POST',
+      // headers: {
+      //   'Content-Type': 'application/json' // задаем тип передаваемого параметра
+      // },
+      body: JSON.stringify(obj)
+    });
+    // const message = event.target.value;
+    const res = await response.json();
+    console.log('chat', typeof res, res)
+    // const res = JSON.parse
+    this.editor.drawMessage(res.result);
   }
 
-  saveName(elements) {
-    // Сохранение своего имени
-    // console.log(elements);
-    [...elements].forEach((elem) => {
-      // console.log(elem)
-      if (elem.name) {
-        // console.log('успех')
-        this.userName = elem.value;
-        // console.log(this.userName)
-      }
-    });
-  }
+  // saveName(elements) {
+  //   // Сохранение своего имени
+  //   // console.log(elements);
+  //   [...elements].forEach((elem) => {
+  //     // console.log(elem)
+  //     if (elem.name) {
+  //       // console.log('успех')
+  //       this.userName = elem.value;
+  //       // console.log(this.userName)
+  //     }
+  //   });
+  // }
 
   async onSubmitForm(event) {
     // Callback - событие submit ввода имя пользователя
     const { elements } = event.target;
-    this.saveName(elements);
+    // this.saveName(elements);
     [...elements].some((elem) => {
       const error = WindowController.getError(elem);
       if (error) {
@@ -69,9 +87,10 @@ export default class WindowController {
       this.editor.popup.remove();
       this.editor.popup = null;
       this.editor.drawChat();
+      this.id = obj.array[obj.array.length - 1].id;
       for (const item of obj.array) {
         this.editor.drawUser(item.id, item.name);
-        if (item.name === this.userName) {
+        if (item.id === this.id) {
           this.editor.colorName(item.id);
         }
       }

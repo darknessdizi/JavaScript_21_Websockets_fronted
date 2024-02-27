@@ -1,7 +1,7 @@
 export default class WindowEdit {
   constructor(conteiner) {
     this.conteiner = conteiner;
-    // this.conteinerTasks = null;
+    this.textarea = null;
     this.formListeners = [];
     // this.tasksListeners = [];
     // this.newTaskListeners = [];
@@ -57,7 +57,7 @@ export default class WindowEdit {
     this.conteiner.classList.add('chat');
     WindowEdit.addTagHTML(this.conteiner, 'chat-names');
     const content = WindowEdit.addTagHTML(this.conteiner, 'chat-content');
-    const textarea = WindowEdit.addTagHTML(content, 'chat-text', 'textarea');
+    this.textarea = WindowEdit.addTagHTML(content, 'chat-text', 'div');
     const input = WindowEdit.addTagHTML(content, 'chat-input', 'input');
     input.setAttribute('placeholder', 'Type your message here');
     input.addEventListener('change', (event) => this.onChangeChat(event));
@@ -71,6 +71,14 @@ export default class WindowEdit {
     const nameUser =  WindowEdit.addTagHTML(div, 'user-name');
     nameUser.textContent = name;
     nameUser.setAttribute('id', id);
+  }
+
+  drawMessage(obj) {
+    const div = WindowEdit.addTagHTML(this.textarea, 'message');
+    const title = WindowEdit.addTagHTML(div, 'message-title');
+    title.textContent = `${obj.name}, ${obj.create}`;
+    const text = WindowEdit.addTagHTML(div, 'message-text');
+    text.textContent = obj.message;
   }
 
   colorName(id) {
@@ -104,7 +112,7 @@ export default class WindowEdit {
   onChangeChat(event) {
     // Событие ввода сообщения (поле input общего чата)
     event.preventDefault();
-    this.changeListeners.forEach((o) => o.call(null));
+    this.changeListeners.forEach((o) => o.call(null, event));
   }
 
   addChangeListeners(callback) {
