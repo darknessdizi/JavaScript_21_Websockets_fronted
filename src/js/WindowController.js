@@ -15,6 +15,10 @@ export default class WindowController {
     this.toolTip = new Tooltip();
     this.actualMessages = [];
     this.id = null;
+    // Для открытия соединения достаточно создать объект WebSocket 
+    // протокол для ws в скобках
+    this.ws = new WebSocket(`ws://localhost:9000`);
+    this.createChat = false;
   }
 
   init() {
@@ -22,51 +26,61 @@ export default class WindowController {
     this.editor.addFormListeners(this.onSubmitForm.bind(this));
     this.editor.addInputListeners(this.onInputValue.bind(this));
     this.editor.addChangeListeners(this.onChangeChat.bind(this));
-  }
 
-  async onChangeChat(event) {
-    // const query = encodeURIComponent(event.target.value);
-    const url = `${this.urlServer}/message/`;
-    const obj = {
-      id: this.id,
-      message: event.target.value
-    }
-    // const response = await fetch(url + query, {
-    const response = await fetch(url, {
-      method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json' // задаем тип передаваемого параметра
-      // },
-      body: JSON.stringify(obj)
+    this.ws.addEventListener('open', (e) => {
+      console.log(e);
+      console.log('ws open');
     });
-    // const message = event.target.value;
-    const res = await response.json();
-    console.log('chat', typeof res, res)
-    // const res = JSON.parse
-    this.editor.drawMessage(res.result);
+    
+    this.ws.addEventListener('close', (e) => {
+      console.log(e);
+      console.log('ws close');
+    });
+    
+    this.ws.addEventListener('error', (e) => {
+      console.log(e);
+      console.log('ws error');
+    });
+    
+    this.ws.addEventListener('message', (e) => {
+      console.log(e);
+      const data = JSON.parse(e.data);
+      if (data.status === 'connect') {
+        this.id = data.body.id;
+        return;
+      }
+      if (data.status === 'addUser') {
+        if ((data.body.id === this.id) || (!this.createChat)) {
+          return;
+        }
+        this.editor.drawUser(data.body.id, data.body.name);
+        return;
+      }
+      if (data.status === 'delete') {
+        const div = document.getElementById(data.body.id);
+        if (div) {
+          div.remove();
+        }
+        return;
+      }
+      if ((data.status === 'message') && (this.createChat)) {
+        const div = this.editor.drawMessage(data.body);
+        if (data.body.id === this.id) {
+          div.classList.add('owner');
+        }
+        this.editor.chat.scrollTop = this.editor.chat.scrollHeight;
+      }
+      console.log('ws message data', data);
+    });
   }
-
-  // saveName(elements) {
-  //   // Сохранение своего имени
-  //   // console.log(elements);
-  //   [...elements].forEach((elem) => {
-  //     // console.log(elem)
-  //     if (elem.name) {
-  //       // console.log('успех')
-  //       this.userName = elem.value;
-  //       // console.log(this.userName)
-  //     }
-  //   });
-  // }
 
   async onSubmitForm(event) {
     // Callback - событие submit ввода имя пользователя
     const { elements } = event.target;
-    // this.saveName(elements);
     [...elements].some((elem) => {
       const error = WindowController.getError(elem);
       if (error) {
-        this.showTooltip(error, elem);
+        this.showTooltip(error, elem); // popup об ошибке ввода имени
         elem.focus();
         return true;
       }
@@ -77,30 +91,48 @@ export default class WindowController {
     }
 
     const url = `${this.urlServer}/addUser/`;
+    const data = new FormData(event.target);
+    data.append('id', this.id);
     const response = await fetch(url, {
       method: 'POST',
-      body: new FormData(event.target)
+      body: data
     });
 
     const obj = await response.json();
     if (response.status === 201) {
       this.editor.popup.remove();
       this.editor.popup = null;
-      this.editor.drawChat();
-      this.id = obj.array[obj.array.length - 1].id;
+      this.createChat = this.editor.drawChat();
       for (const item of obj.array) {
-        this.editor.drawUser(item.id, item.name);
+        if (item.name) {
+          this.editor.drawUser(item.id, item.name);
+        }
         if (item.id === this.id) {
           this.editor.colorName(item.id);
+          this.ws.send(JSON.stringify({ id: item.id, name: item.name }));
         }
       }
+      for (const item of obj.meassages) {
+        this.editor.drawMessage(item);
+      }
+      this.editor.chat.scrollTop = this.editor.chat.scrollHeight;
     }
     if (obj.status === 'имя занято') {
-      const elem = [...elements].find((elem) => {
-        return elem.name === 'user';
+      const elem = [...elements].find((el) => {
+        return el.name === 'user';
       });
       this.showTooltip(errors.user.doubleName, elem);
     }
+  }
+
+  onChangeChat(event) {
+    // отправка сообщений в чате
+    const obj = {
+      id: this.id,
+      message: event.target.value
+    }
+    this.ws.send(JSON.stringify(obj));
+    event.target.value = '';
   }
 
   showTooltip(message, el) {
@@ -123,12 +155,10 @@ export default class WindowController {
   }
 
   onInputValue() {
-    // Удаление сообщения об ошибке поля input
+    // Удаление сообщения об ошибке в поле input
     this.actualMessages.forEach((item) => {
       this.toolTip.removeTooltip(item.id);
     });
     this.actualMessages = [];
   }
-
-  
 }

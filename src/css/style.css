@@ -159,172 +159,24 @@ body {
 }
 
 .message {
-  width: 80%;
+  max-width: 70%;
   background-color: coral;
+  margin-bottom: 5px;
 }
 
-
-
-/* .conteiner-tasks { */
-  /* отмена выделения текста */
-  /* user-select: none; 
-} */
-
-/* .conteiner-tasks .content-task:nth-child(1) {
-  border-top: 1px solid rgb(78, 78, 78);
-} */
-
-/* .content-task {
-  background-color:khaki;
-  border-left: 1px solid rgb(78, 78, 78);
-  border-right: 1px solid rgb(78, 78, 78);
-  border-bottom: 1px solid rgb(78, 78, 78);
-  font-size: 1em;
-}
-
-.content-task:hover {
-  background-color:rgb(230, 215, 82);
-} */
-
-/* .task {
-  display: flex;
-  padding: 10px 20px 10px 5px;
-}
-
-.task-controll {
-  display: flex;
-} */
-
-/* .task-status,
-.task-edit,
-.task-delete
- {
-  border-radius: 50%;
-  height: 20px;
-  min-width: 20px;
-  background-repeat: no-repeat;
-  flex-grow: 0;
-} */
-
-/* .task-status:hover,
-.task-edit:hover,
-.task-delete:hover {
-  background-color: aquamarine;
-} */
-
-/* .task-status {
-  background-image: url('../img/status-no.svg');
-  background-position: center;
-  background-size: cover;
-} */
-
-/* .task-edit {
-  background-image: url('../img/pencil.svg');
-  background-position: 50% 35%;
-  background-size: 65%;
-  border: 1.5px solid black;
-  box-sizing: border-box;
-  margin-right: 5px;
-} */
-
-/* .task-delete {
-  background-image: url('../img/cross.svg');
-  background-position: center;
-  background-size: cover;
-} */
-
-/* .task-status.done {
-  background-image: url('../img/status-yes.svg');
-} */
-
-/* .task-description {
-  margin: 5px 35px 15px;
-} */
-
-/* .task-description-text {
-  word-break: break-word; */
-  /* убирает полосу прокрутки в теге pre */
-  /* white-space: pre-wrap;
-  font-family: inherit;
-  margin: 0;
-} */
-
-/* .task-name {
-  margin-left: 10px;
+.owner {
+  background-color: rgb(159, 255, 80);
+  margin-left: auto;
+  /* text-align: end; */
   margin-right: 10px;
-  flex-grow: 1;
-  word-break: break-word;
-} */
-
-/* .task-created {
-  min-width: 20%;
-  text-align: center;
-  margin-right: 5px;
-} */
-
-/* .hidden {
-  display: none;
-} */
-
-/* .background-popup {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-} */
-
-/* .popup-window {
-  width: 40%;
-  background-color: white;
-  padding: 10px 10px 0px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  border: 1px solid black;
-} */
-
-/* .popup-window div {
-  margin-bottom: 10px;
-} */
-
-/* .popup-title {
-  text-align: center;
+  /* width: auto; */
+  /* min-width: 10px; */
 }
 
-.popup-description-input {
-  margin-bottom: 10px;
-} */
-
-/* .popup-description-textarea {
-  height: 3em;
-  resize: none;
-  margin-bottom: 10px;
+.owner .message-title {
+  text-align: end;
 }
-
-.popup-buttons {
-  display: flex;
-  justify-content: end;
+.message-text {
+  display: inline;
+  margin-left: 0;
 }
-
-.popup-buttons button:nth-child(1) {
-  margin-right: 10px;
-} */
-
-/* .popup-button-cancel,
-.popup-button-ok { */
-  /* margin-top: 10px; */
-  /* padding: 5px 20px;
-  border: 1px solid  black;
-  border-radius: 10px;
-  cursor: pointer;
-} */
-
-/* .popup-button-cancel:hover,
-.popup-button-ok:hover {
-  background-color: rgb(220, 221, 221);
-} */
