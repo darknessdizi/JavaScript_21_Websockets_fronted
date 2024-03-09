@@ -62,7 +62,7 @@ export default class WindowEdit {
     const block = this.conteiner.querySelector('.chat-names');
     const div = WindowEdit.addTagHTML(block, 'user-conteiner');
     WindowEdit.addTagHTML(div, 'user-avatar');
-    const nameUser =  WindowEdit.addTagHTML(div, 'user-name');
+    const nameUser = WindowEdit.addTagHTML(div, 'user-name');
     nameUser.textContent = name;
     div.setAttribute('id', id);
   }
@@ -77,10 +77,12 @@ export default class WindowEdit {
     return div;
   }
 
-  colorName(id) {
+  static colorName(id) {
     // Подкраска имени текущего пользователя
     const target = document.getElementById(id);
     target.classList.add('curentUser');
+    // const name = target.querySelector('.user-name');
+    // name.textContent = 'Я';
   }
 
   onSubmitForm(event) {

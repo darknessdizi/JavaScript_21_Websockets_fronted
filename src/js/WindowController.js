@@ -1,11 +1,11 @@
-import Tooltip from './ToolTip';
+import Tooltip from './Tooltip';
 
 const errors = {
   user: {
     valueMissing: 'Укажите свой псевдоним!',
     // patternMismatch: 'Имя только на латинице!', // для вариантов развития
     doubleName: 'Такое имя уже используется!',
-  }
+  },
 };
 
 export default class WindowController {
@@ -15,9 +15,9 @@ export default class WindowController {
     this.toolTip = new Tooltip();
     this.actualMessages = [];
     this.id = null;
-    // Для открытия соединения достаточно создать объект WebSocket 
+    // Для открытия соединения достаточно создать объект WebSocket
     // протокол для ws в скобках
-    this.ws = new WebSocket(`ws://localhost:9000`);
+    this.ws = new WebSocket(`ws://localhost:${port}`);
     this.createChat = false;
   }
 
@@ -31,17 +31,17 @@ export default class WindowController {
       console.log(e);
       console.log('ws open');
     });
-    
+
     this.ws.addEventListener('close', (e) => {
       console.log(e);
       console.log('ws close');
     });
-    
+
     this.ws.addEventListener('error', (e) => {
       console.log(e);
       console.log('ws error');
     });
-    
+
     this.ws.addEventListener('message', (e) => {
       console.log(e);
       const data = JSON.parse(e.data);
@@ -64,13 +64,15 @@ export default class WindowController {
         return;
       }
       if ((data.status === 'message') && (this.createChat)) {
-        const div = this.editor.drawMessage(data.body);
+        const obj = data.body;
+        const date = WindowController.getNewFormatDate(obj.create);
+        obj.create = date;
+        const div = this.editor.drawMessage(obj);
         if (data.body.id === this.id) {
           div.classList.add('owner');
         }
         this.editor.chat.scrollTop = this.editor.chat.scrollHeight;
       }
-      console.log('ws message data', data);
     });
   }
 
@@ -95,7 +97,7 @@ export default class WindowController {
     data.append('id', this.id);
     const response = await fetch(url, {
       method: 'POST',
-      body: data
+      body: data,
     });
 
     const obj = await response.json();
@@ -108,7 +110,7 @@ export default class WindowController {
           this.editor.drawUser(item.id, item.name);
         }
         if (item.id === this.id) {
-          this.editor.colorName(item.id);
+          this.editor.constructor.colorName(item.id);
           this.ws.send(JSON.stringify({ id: item.id, name: item.name }));
         }
       }
@@ -118,9 +120,7 @@ export default class WindowController {
       this.editor.chat.scrollTop = this.editor.chat.scrollHeight;
     }
     if (obj.status === 'имя занято') {
-      const elem = [...elements].find((el) => {
-        return el.name === 'user';
-      });
+      const elem = [...elements].find((el) => el.name === 'user');
       this.showTooltip(errors.user.doubleName, elem);
     }
   }
@@ -129,10 +129,11 @@ export default class WindowController {
     // отправка сообщений в чате
     const obj = {
       id: this.id,
-      message: event.target.value
-    }
+      message: event.target.value,
+    };
     this.ws.send(JSON.stringify(obj));
-    event.target.value = '';
+    const { target } = event;
+    target.value = '';
   }
 
   showTooltip(message, el) {
@@ -160,5 +161,26 @@ export default class WindowController {
       this.toolTip.removeTooltip(item.id);
     });
     this.actualMessages = [];
+  }
+
+  static _addZero(number) {
+    // делает число двухзначным
+    let result = number;
+    if (result < 10) {
+      result = `0${result}`;
+    }
+    return result;
+  }
+
+  static getNewFormatDate(timestamp) {
+    // возвращает новый формат даты и времени
+    const start = new Date(timestamp);
+    const year = String(start.getFullYear());
+    const month = WindowController._addZero(start.getMonth());
+    const date = WindowController._addZero(start.getDate());
+    const hours = WindowController._addZero(start.getHours());
+    const minutes = WindowController._addZero(start.getMinutes());
+    const time = `${hours}:${minutes} ${date}.${month}.${year}`;
+    return time;
   }
 }

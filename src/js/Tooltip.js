@@ -27,7 +27,7 @@ export default class Tooltip {
 
     const top = element.offsetTop - tooltipElement.offsetHeight - 8;
     tooltipElement.style.top = `${top}px`;
-    
+
     const widthArrow = tooltipElement.offsetWidth / 2 - arrow.offsetWidth / 2;
     arrow.style.left = `${widthArrow}px`;
     return id;
