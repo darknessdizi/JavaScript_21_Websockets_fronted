@@ -1,5 +1,7 @@
 # Домашнее задание к занятию "8. EventSource, Websockets"
 
+[![Build status](https://ci.appveyor.com/api/projects/status/67sa49evsj0eqd0a?svg=true)](https://ci.appveyor.com/project/darknessdizi/javascript-21-websockets-fronted)
+
 ## Backend
 
 Ссылка на git-hub репозиторий (fronted): https://github.com/darknessdizi/JavaScript_21_Websockets_backend.git
