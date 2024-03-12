@@ -9,15 +9,16 @@ const errors = {
 };
 
 export default class WindowController {
-  constructor(editor, port) {
+  constructor(editor, url) {
     this.editor = editor;
-    this.urlServer = `http://localhost:${port}`;
+    // this.urlServer = `http://localhost:${port}`;
+    this.urlServer = url;
     this.toolTip = new Tooltip();
     this.actualMessages = [];
     this.id = null;
     // Для открытия соединения достаточно создать объект WebSocket
-    // протокол для ws в скобках
-    this.ws = new WebSocket(`ws://localhost:${port}`);
+    // протокол для ws/wss в скобках
+    this.ws = new WebSocket(`wss://javascript-21-websockets-backend.onrender.com`);
     this.createChat = false;
   }
 
