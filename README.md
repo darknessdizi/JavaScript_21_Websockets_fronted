@@ -6,6 +6,8 @@
 
 Ссылка на git-hub репозиторий (fronted): https://github.com/darknessdizi/JavaScript_21_Websockets_backend.git
 
+Ссылка сервера на render: https://dashboard.render.com/web/srv-cno8tmg21fec739c10m0/deploys/dep-cno8tn021fec739c10pg
+
 ---
 
 ## Fronted

@@ -18,7 +18,7 @@ export default class WindowController {
     this.id = null;
     // Для открытия соединения достаточно создать объект WebSocket
     // протокол для ws/wss в скобках
-    this.ws = new WebSocket(`wss://javascript-21-websockets-backend.onrender.com`);
+    this.ws = new WebSocket('wss://javascript-21-websockets-backend.onrender.com');
     this.createChat = false;
   }
 
